@@ -1,0 +1,24 @@
+name: Matrix Deploy
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+jobs:
+  Deploy-Across-Env:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-lates, windows-latest, macos-latest]
+        node-version: [16, 17, 18]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: setup nodejs ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Node version
+        run: node -v
+      - name: Hellow world script
+        run: node -e 'console.log("Hello World from Node " + process.version + " on ${{ matrix.os }}")'
